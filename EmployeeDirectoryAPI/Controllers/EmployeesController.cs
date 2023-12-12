@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EmployeeDirectoryAPI.Data;
 using EmployeeDirectoryAPI.Model;
+using Microsoft.AspNetCore.Cors;
 
 namespace EmployeeDirectoryAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAny")]
     public class EmployeesController : ControllerBase
     {
         private static List<Employee> _employees = new List<Employee>
