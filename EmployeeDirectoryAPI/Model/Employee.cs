@@ -8,7 +8,7 @@
         public string LastName { get; set; }
         public string JobTitle { get; set; }
         public string Department { get; set; }
-        public string Location { get; set; }
+        public string? Location { get; set; }
     }
 }
 

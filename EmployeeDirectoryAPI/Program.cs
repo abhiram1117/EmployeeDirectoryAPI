@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using EmployeeDirectoryAPI.Data;
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<EmployeeDirectoryAPIContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EmployeeDirectoryAPIContext") ?? throw new InvalidOperationException("Connection string 'EmployeeDirectoryAPIContext' not found.")));
@@ -18,10 +17,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
                       policy =>
                       {
-                        //  policy.WithOrigins("https://localhost:7061/api/Employees");
-                          policy.AllowAnyOrigin();
-                          policy.AllowAnyMethod();
-                          policy.AllowAnyHeader();
+                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                       });
 });
 

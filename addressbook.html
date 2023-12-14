@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="addressbook.stylesheet.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    
+</head>
+<body>
+    <div class="body-container">
+        <div class="heading-container">
+            <div class="saketa-logo">
+                <img src="images/logo.png">
+            </div>
+            <div class="employee-directory">
+                <h1>Employee Directory</h1>
+                <p>The Ultimate People Directory Experience</p>
+            </div>
+            <div class="profile-container">
+                <h1>Welcome, <a href="#profile">User's Name</a></h1>
+                <img src="images/dp.png" >
+            </div>
+
+
+        </div>
+        <div class="inforation-container">
+            <div class="categories-container">
+                <div class="departments">
+                    <h1>Departments</h1>
+
+                    <ul id="departmentList"> </ul>
+
+                </div>
+                <div class="offices">
+                    <h1>Offices</h1>
+                    <ul id="locationList">
+                        
+                    </ul>
+                </div>
+                <div class="job-titles">
+                    <h1>Job Titles</h1>
+                    <ul id="jobTitleList"></ul>
+                    <ul id="jobTitleListHidden"></ul>
+                    <a id="viewMoreJobTitles">View More</a>
+                </div>
+            </div>
+
+            <div class="right-container">
+                <nav class="alphabet-container">
+                    <button class="alphabet-box" type="button" onclick="displayEmployees(employees)" ><i class="fas fa-user"></i></button>
+                    <div id="alphabetButtons"></div>
+
+                </nav>
+
+                <div class="searching-container">
+                    <div class="searchbar-container">
+                        <p>Search</p>
+                        <div class="searchbar">
+                            <p><i class="fas fa-search"></i></p>
+                            <input type="text" id="searchInput"  placeholder="Enter any keyword" name="search">
+                            
+                        </div>
+                        
+                        <button id="clearButton" onclick="clearSearch()">Clear</button>
+
+
+                    </div>
+                    <div class="filter-container">
+                        <p>Filter by</p>
+                        <div class="dropbox">
+                            <form action="/action_page.php">
+                                <select id="searchOption" name="filter">
+                                    
+                                    <option value="firstName">First Name</option>
+                                    <option value="lastName">Last Name</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="add-employee">
+                        <button type="button"  onclick="openForm()">Add Employee</button>
+                        <div class="modal-overlay" id="modalOverlay">
+                            <div class="adding-form">
+                                <form id="employeeForm">
+                                    <button class="close-button" id="closeForm" onclick="closeModal()">×</button>
+
+
+                                    <div class="form-display">
+                                        <label for="firstName">First Name:</label>
+                                        <input type="text" id="firstName" name="firstName" required>
+                                    </div>
+                                    <p class="error" id="firstNameError">Please enter only alphabets.</p>
+                                    <div class="form-display">
+                                        <label for="lastName">Last Name:</label>
+                                        <input type="text" id="lastName" name="lastName" required>
+                                    </div>
+                                    <p class="error" id="lastNameError">Please enter only alphabets.</p>
+                                    <div class="form-display">
+                                        <label for="jobTitle">Job Title:</label>
+                                        <select type="text" id="jobTitle" name="jobTitle" required>
+                                            <option>Select Job title</option>
+                                            <option>SharePoint Practice Head</option>
+                                            <option>Operatons Manager</option>
+                                            <option>Product Manager</option>
+                                            <option>Lead Engineer</option>
+                                            <option>Network Engineer</option>
+                                            <option>Talent Manager</option>
+                                            <option>Software Engineer</option>
+                                            <option>UI Designer</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-display">
+                                        <label for="department">Department:</label>
+                                        <select type="text" id="department" name="department" required>
+                                            <option>IT</option>
+                                            <option>HR</option>
+                                            <option>UX</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-display">
+                                        <label for="profilePicture">Profile Picture:</label>
+                                        <input type="file" id="profilePicture" name="profilePicture" />
+                                    </div>
+                                    <input type="submit" id="submitEmployeeForm" value="submit">
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="note-container">
+                            <p><b>Note:</b> Please use the advanced filter options to refine your results. </p>
+                        </div>
+                        <div class="employees-container">
+                            <div class="employee-grid">
+                                <div id="employeeList">
+
+
+                                </div>
+                                <div id="editEmployeeModal" class="modal" style="display:none">
+                                    <div class="modal-content">
+                                        <span class="close" id="closeEditModal">x</span>
+                                        <h2>Edit Employee</h2>
+                                        <form>
+                                            <label for="firstName">First Name:</label>
+                                            <input type="text" id="editFirstName" placeholder="First Name"><br /><br />
+                                            <label for="lastName">Last Name:</label>
+                                            <input type="text" id="editLastName" placeholder="Last Name"><br /><br />
+                                            <label for="jobTitle">Job Title:</label>
+                                            <select type="text" id="editJobTitle" placeholder="Job Title">
+                                                <option>SharePoint Practice Head</option>
+                                                <option>Operatons Manager</option>
+                                                <option>Product Manager</option>
+                                                <option>Lead Engineer</option>
+                                                <option>Network Engineer</option>
+                                                <option>Talent Manager</option>
+                                                <option>Software Engineer</option>
+                                                <option>UI Designer</option>
+                                            </select><br /><br />
+                                            <label for="department">Department:</label>
+                                            <select type="text" id="editDepartment" placeholder="Department">
+                                                <option>IT</option>
+                                                <option>HR</option>
+                                                <option>UX</option>
+                                            </select><br /><br />
+
+
+                                            <button id="saveEdit">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+             
+        </div>
+    </div>
+
+    <script src="addressbook.js"></script>       
+</body>
+</html>
