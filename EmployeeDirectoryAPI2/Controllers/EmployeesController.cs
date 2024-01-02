@@ -23,31 +23,43 @@ namespace EmployeeDirectoryAPI2.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<ApiResponse<IEnumerable<Employee>>>> GetEmployees()
         {
-          if (_context.Employees == null)
-          {
-              return NotFound();
-          }
-            return await _context.Employees.ToListAsync();
+          var employees = await _context.Employees.ToListAsync();
+          var response = new ApiResponse<IEnumerable<Employee>>
+        {
+            Success = true,
+            Message = "Employees retrieved successfully",
+            Data = employees
+        };
+            return response;
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public async Task<ActionResult<ApiResponse<Employee>>> GetEmployee(int id)
         {
-          if (_context.Employees == null)
-          {
-              return NotFound();
-          }
+          
             var employee = await _context.Employees.FindAsync(id);
 
             if (employee == null)
             {
-                return NotFound();
+                var notFoundResponse = new ApiResponse<Employee>
+                {
+                    Success = false,
+                    Message = "Employee not Found",
+                    Data = null
+                };
+                return notFoundResponse;
             }
+            var successResponse = new ApiResponse<Employee>
+            {
+                Success = true,
+                Message = "Employees retrieved successfully",
+                Data = employee
+            };
 
-            return employee;
+            return successResponse;
         }
 
         // PUT: api/Employees/5
@@ -56,8 +68,15 @@ namespace EmployeeDirectoryAPI2.Controllers
         public async Task<IActionResult> PutEmployee(int id, Employee employee)
         {
             if (id != employee.Id) {
-                return BadRequest();
+                var mismatchResponse = new ApiResponse<Employee>
+                {
+                    Success = false,
+                    Message = "Employee Mismatch",
+                    Data = null
+                };
+                return BadRequest(mismatchResponse);
             }
+
             _context.Entry(employee).State = EntityState.Modified;
             try
             {
@@ -68,29 +87,44 @@ namespace EmployeeDirectoryAPI2.Controllers
             {
                 if (!EmployeeExists(id))
                 {
-                    return BadRequest();
+                    var notFoundresponse = new ApiResponse<Employee>
+                    {
+                        Success = false,
+                        Message = "Employee not found",
+                        Data = null
+                    };
+                    return NotFound(notFoundresponse) ;
                 }
                 else
                 {
                     throw;
                 }
             }
-            return NoContent();
+            var successResponse = new ApiResponse<Employee>
+            {
+                Success = true,
+                Message = "Employees updated successfully",
+                Data = employee
+            };
+            return Ok(successResponse);
         }
 
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<ApiResponse<Employee>>> PostEmployee(Employee employee)
         {
-          if (_context.Employees == null)
-          {
-              return Problem("Entity set 'EmployeeDirectoryAPIDataContext.Employees'  is null.");
-          }
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            var successResponse = new ApiResponse<Employee>
+            {
+                Success = true,
+                Message = "Employee created Successfully",
+                Data = employee
+            };
+
+            return CreatedAtAction("GetEmployee", new { id = employee.Id }, successResponse);
         }
 
         // DELETE: api/Employees/5
