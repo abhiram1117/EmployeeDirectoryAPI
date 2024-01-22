@@ -14,15 +14,15 @@ namespace EmployeeDirectoryAPI.Data
         {
         }
 
-        public DbSet<EmployeeDirectoryAPI.Model.Employee> Employees { get; set; } = default!;
-
+        public DbSet<Employee> Employees { get; set; } = default!;
+        public DbSet<Department> Departments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
 
             modelBuilder.Entity<Employee>().HasData(
-                new Employee { ID = 1, FirstName = "Anthony", LastName = "Morris", JobTitle = "SharePoint Practice Head", Department = "IT", Location = "Seattle" },
-                new Employee { ID = 2, FirstName = "Helen", LastName = "Zimmerman", JobTitle = "Operations Manager", Department = "IT", Location = "Seattle" },
+            new Employee { ID = 1, FirstName = "Anthony", LastName = "Morris", JobTitle = "SharePoint Practice Head", Department = "IT", Location = "Seattle" },
+            new Employee { ID = 2, FirstName = "Helen", LastName = "Zimmerman", JobTitle = "Operations Manager", Department = "IT", Location = "Seattle" },
             new Employee { ID = 3, FirstName = "Joanthon", LastName = "Smith", JobTitle = "Product Manager", Department = "IT", Location = "Seattle" },
             new Employee { ID = 4, FirstName = "Tami", LastName = "Hopkins", JobTitle = "Lead Engineer", Department = "IT", Location = "Seattle" },
             new Employee { ID = 5, FirstName = "Franklin", LastName = "Humark", JobTitle = "Network Engineer", Department = "IT", Location = "Seattle" },
