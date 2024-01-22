@@ -1,101 +1,76 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using EmployeeDirectoryAPI.Data;
 using EmployeeDirectoryAPI.Model;
-using Microsoft.AspNetCore.Cors;
+using EmployeeDirectoryAPI.Services;
+using EmployeeDirectoryAPI.Migrations;
 
 namespace EmployeeDirectoryAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
     public class EmployeesController : ControllerBase
     {
-       
-        private readonly EmployeeDirectoryAPIContext _employee;
+        private readonly EmployeeService _employeeService;
 
-        public EmployeesController(EmployeeDirectoryAPIContext employee)
+        public EmployeesController(EmployeeService employeeService)
         {
-            _employee = employee;
+            _employeeService = employeeService;
         }
 
-        // GET: api/Employees
         [HttpGet]
         public ActionResult<IEnumerable<Employee>> GetEmployee()
         {
-          
-            return _employee.Employees.ToList();
+            var employees = _employeeService.GetEmployees();
+            var response = new ApiResponse<IEnumerable<Employee>> { 
+                Success = true,
+                Message ="Employees retrieved Successfully",
+                Data = employees
+            };
+            return Ok(response);
         }
 
-        // GET: api/Employees/5
         [HttpGet("{id}")]
         public ActionResult<Employee> GetEmployee(int id)
         {
-            var employee = _employee.Employees.FirstOrDefault(e => e.ID == id);
+            var employee = _employeeService.GetEmployee(id);
 
             if (employee == null)
-            {
-                return NotFound();
-            }
+                return NotFound(new ApiResponse<Employee> { 
+                    Success = false,
+                    Message = "Employee not found",
+                    Data = null
+                });
 
-            return employee;
+            return Ok(new ApiResponse<Employee> { 
+                Success = true,
+                Message = "Employees retrieved Successfully",
+                Data = employee });
         }
-
-        // PUT: api/Employees/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPut("{id}")]
         public IActionResult PutEmployee(int id, Employee updatedEmployee)
         {
+            _employeeService.UpdateEmployee(id, updatedEmployee);
 
-            var existingEmployee = _employee.Employees.FirstOrDefault(e => e.ID == id);
-            if (existingEmployee == null)
-            {
-                return NotFound();
-            }
+            if (id!= updatedEmployee.ID)
+                return NotFound(new ApiResponse<Employee> { 
+                    Success = false, 
+                    Message = "Employee not found",
+                    Data = null
+                });
 
-            existingEmployee.FirstName = updatedEmployee.FirstName;
-            existingEmployee.LastName = updatedEmployee.LastName;
-            existingEmployee.JobTitle = updatedEmployee.JobTitle;
-            existingEmployee.Department = updatedEmployee.Department;
-            existingEmployee.Location = updatedEmployee.Location;
-
-            _employee.SaveChanges();
-
-            return NoContent(); ;
-
-        }
-
-        // POST: api/Employees
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public ActionResult<Employee> PostEmployee(Employee employee)
-        {
-
-            
-            _employee.Employees.Add(employee);
-            _employee.SaveChanges();
-            return CreatedAtAction(nameof(GetEmployee), new { id = employee.ID }, employee);
-        }
-
-        // DELETE: api/Employees/5
-        [HttpDelete("{id}")]
-        public IActionResult DeleteEmployee(int id)
-        {
-            var employee = _employee.Employees.FirstOrDefault(e => e.ID == id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            _employee.Remove(employee);
             return NoContent();
         }
 
-       
+        [HttpPost]
+        public ActionResult<Employee> PostEmployee(Employee employee)
+        {
+            var createdEmployee = _employeeService.CreateEmployee(employee);
+            return CreatedAtAction(nameof(GetEmployee), new { id = createdEmployee.ID },
+                new ApiResponse<Employee> { Success = true, Data = createdEmployee });
+        }
+
+        
     }
 }
